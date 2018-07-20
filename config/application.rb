@@ -2,6 +2,45 @@
 
 require File.expand_path('../boot', __FILE__)
 
+ROOT_PATH = File.expand_path('..', File.dirname(__FILE__))
+
+def require_with_reload_check(raw_path)
+
+  unless $LOADED_FEATURES.include?(raw_path)
+    $require_sites ||= {}
+    site, line, info = caller.first.split(':')
+    expanded_site = File.expand_path(site)
+    load_dir = $LOAD_PATH.detect{|dir|
+      File.exist?(File.expand_path(raw_path + ".rb", dir))
+    }
+    expanded_path = File.expand_path(raw_path, load_dir)
+
+    if (expanded_path.index(ROOT_PATH) == 0) &&
+        $require_sites.key?(expanded_path) &&
+        $require_sites[expanded_path][:as] != raw_path &&
+        expanded_path !~ /test_helper$/
+      warn "!" * 80
+      warn "#{expanded_path} is being reloaded!"
+      warn "It was originally loaded as: #{$require_sites[expanded_path][:as]}"
+      warn "From #{$require_sites[expanded_path][:in]}"
+      warn "But now it is being loaded as: #{raw_path}"
+      warn "In #{expanded_site}"
+      warn "!" * 80
+    end
+
+    $require_sites[expanded_path] = {
+      :as => raw_path,
+      :in => expanded_site
+    }
+  end
+end
+
+unless defined?($reload_guard_enabled)
+  alias require_without_reload_check require
+  alias require require_with_reload_check
+  $reload_guard_enabled = true
+end
+
 # Pick the frameworks you want:
 #require "active_model/railtie"
 #require "active_job/railtie"
