@@ -2,6 +2,26 @@
 
 require File.expand_path('../boot', __FILE__)
 
+# Pick the frameworks you want:
+#require "active_model/railtie"
+#require "active_job/railtie"
+# require "active_record/railtie"
+require "action_controller/railtie"
+#require "action_mailer/railtie"
+#require "action_view/railtie"
+# require "sprockets/railtie"
+# require "rails/test_unit/railtie"
+
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
+
+# Workaround for debify not being able to use embedded gems.
+$LOAD_PATH.push File.expand_path "../../engines/conjur_audit/lib", __FILE__
+require 'conjur_audit'
+
+module Possum
+  class Application < Rails::Application
 ROOT_PATH = File.expand_path('..', File.dirname(__FILE__))
 
 def require_with_reload_check(raw_path)
@@ -40,27 +60,7 @@ unless defined?($reload_guard_enabled)
   alias require require_with_reload_check
   $reload_guard_enabled = true
 end
-
-# Pick the frameworks you want:
-#require "active_model/railtie"
-#require "active_job/railtie"
-# require "active_record/railtie"
-require "action_controller/railtie"
-#require "action_mailer/railtie"
-#require "action_view/railtie"
-# require "sprockets/railtie"
-# require "rails/test_unit/railtie"
-
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
-Bundler.require(*Rails.groups)
-
-# Workaround for debify not being able to use embedded gems.
-$LOAD_PATH.push File.expand_path "../../engines/conjur_audit/lib", __FILE__
-require 'conjur_audit'
-
-module Possum
-  class Application < Rails::Application
+    
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
