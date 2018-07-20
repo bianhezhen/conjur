@@ -65,6 +65,7 @@ function buildDockerImages() {
 
 function test_gke() {
   docker run --rm \
+    -e RAILS_ENV=test
     -e CONJUR_AUTHN_K8S_TAG \
     -e CONJUR_AUTHN_K8S_TEST_NAMESPACE \
     -e INVENTORY_TAG \
@@ -80,6 +81,7 @@ function test_gke() {
 
 function test_openshift() {
   docker run --rm \
+    -e RAILS_ENV=test
     -e CONJUR_AUTHN_K8S_TAG \
     -e CONJUR_AUTHN_K8S_TEST_NAMESPACE \
     -e INVENTORY_TAG \

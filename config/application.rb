@@ -21,7 +21,7 @@ $LOAD_PATH.push File.expand_path "../../engines/conjur_audit/lib", __FILE__
 require 'conjur_audit'
 
 module Possum
-  class Application < Rails::Application    
+  class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
